@@ -3,6 +3,10 @@ name: Check PR for Cucumber Test Cases
 on:
   pull_request:
     types: [opened, synchronize, labeled, unlabeled]
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
 
 jobs:
   check-tests:
@@ -16,5 +20,7 @@ jobs:
         run: npm install
       - name: Check for Cucumber test cases
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: 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
+
         run: node check_tests.js
