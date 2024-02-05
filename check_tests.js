@@ -55,7 +55,7 @@
 
 const { Octokit } = require("@octokit/rest");
 const github = require('@actions/github');
-const core = require('@actions/core'); // Import the core package
+const core = require('@actions/core');
 const githubToken = process.env.GITHUB_TOKEN;
 const octokit = new Octokit({ auth: githubToken });
 
