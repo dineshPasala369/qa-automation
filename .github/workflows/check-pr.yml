@@ -13,9 +13,9 @@ jobs:
         with:
           node-version: '16'
       - name: Install Dependencies
-        run: npm install
+        run: npm installl
       - name: Check for Cucumber test cases
         env:
-          GITHUB_TOKEN: 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
+          GITHUB_TOKEN:
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node check_tests.js
