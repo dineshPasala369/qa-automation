@@ -24,7 +24,7 @@ async function checkForTestCases(owner, repo, pullNumber) {
     const hasSkipLabel = pr.labels.some(label => label.name === 'qa_2.0_skip');
     if (hasSkipLabel) {
       console.log("Skipping test case check due to 'qa_2.0_skip' label.");
-      await postComment(owner, repo, pullNumber, "Relevant Cucumber test cases have been found in the PR.");
+      await postComment(owner, repo, pullNumber, "Skipping Cucmber test case check due to 'qa_2.0_skip' label.");
       return;
     }
 
