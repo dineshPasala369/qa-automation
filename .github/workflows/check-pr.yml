@@ -16,5 +16,5 @@ jobs:
         run: npm install @octokit/rest
       - name: Check for Cucumber test cases
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: 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
         run: node check_tests.js

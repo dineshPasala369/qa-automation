@@ -3,16 +3,30 @@ const github = require('@actions/github');
 const githubToken = process.env.GITHUB_TOKEN;
 const octokit = new Octokit({ auth: githubToken });
 
-
 async function checkForTestCases(owner, repo, pullNumber) {
   try {
+    // Fetch pull request details to get the labels
+    const { data: pr } = await octokit.pulls.get({
+      owner,
+      repo,
+      pull_number: pullNumber,
+    });
+
+    // Check if the PR has the 'qa_2.0_skip' label
+    const hasSkipLabel = pr.labels.some(label => label.name === 'qa_2.0_skip');
+
+    if (hasSkipLabel) {
+      console.log("Skipping test case check due to 'qa_2.0_skip' label.");
+      return; // Exit the function early
+    }
+
+    // Proceed with checking for test cases if the label is not present
     const { data: files } = await octokit.pulls.listFiles({
       owner,
       repo,
       pull_number: pullNumber,
     });
 
-    // Check for files that are either added or modified in the PR, including subdirectories
     const hasRelevantTests = files.some(file =>
       (file.status === 'added' || file.status === 'modified') &&
       file.filename.startsWith('local-tests/features/') // Adjust path as necessary
@@ -30,13 +44,7 @@ async function checkForTestCases(owner, repo, pullNumber) {
   }
 }
 
-//// Example usage - ensure these values are dynamically set based on actual PR context
-//const owner = 'Nalla';
-//const repo = 'qa-automation';
-//const pullNumber = 1; // Dynamically set this based on the PR event
-
-
-const github = require('@actions/github');
+// Usage with dynamic values from the GitHub Actions context
 const pullNumber = github.context.payload.pull_request.number;
 const owner = github.context.repo.owner;
 const repo = github.context.repo.repo;
