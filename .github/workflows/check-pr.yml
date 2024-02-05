@@ -20,7 +20,6 @@ jobs:
         run: npm install
       - name: Check for Cucumber test cases
         env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_TOKEN: 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
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
         run: node check_tests.js
