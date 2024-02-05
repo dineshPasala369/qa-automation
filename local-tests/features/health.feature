@@ -6,3 +6,4 @@ Feature: Health
     And person exists
     When I create uuid '
     Then I get a 201
+    Then I get a Healthy
