@@ -41,7 +41,7 @@ async function checkForTestCases(owner, repo, pullNumber) {
 
     if (hasRelevantTests) {
       console.log("**Relevant Cucumber test cases have been found in the PR.**");
-      await postComment(owner, repo, pullNumber, "**Relevant Cucumber test cases have been found in the PR.**");
+      await postComment(owner, repo, pullNumber, "**Relevant Cucumber test cases have been found in the PR. QA_2.0 Checkpoint Passed**");
     } else {
       const message = "**No relevant Cucumber test cases found. Please add or update test cases for new features.**";
       console.log(message);
