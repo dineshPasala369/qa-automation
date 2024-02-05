@@ -17,4 +17,4 @@ jobs:
       - name: Check for Cucumber test cases
         env:
           GITHUB_TOKEN: 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
-        run: node check_tests.js
+        run: node scripts/check_tests.js
