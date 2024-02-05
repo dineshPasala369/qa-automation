@@ -23,8 +23,8 @@ async function checkForTestCases(owner, repo, pullNumber) {
 
     const hasSkipLabel = pr.labels.some(label => label.name === 'qa_2.0_skip');
     if (hasSkipLabel) {
-      console.log("Skipping test case check due to 'qa_2.0_skip' label.");
-      await postComment(owner, repo, pullNumber, "Skipping Cucmber test case check due to 'qa_2.0_skip' label.");
+      console.log("**Skipping test case check due to 'qa_2.0_skip' label.**");
+      await postComment(owner, repo, pullNumber, "**Skipping Cucmber test case check due to 'qa_2.0_skip' label.**");
       return;
     }
 
@@ -40,16 +40,16 @@ async function checkForTestCases(owner, repo, pullNumber) {
     );
 
     if (hasRelevantTests) {
-      console.log("Relevant Cucumber test cases have been found in the PR.");
-      await postComment(owner, repo, pullNumber, "Relevant Cucumber test cases have been found in the PR.");
+      console.log("**Relevant Cucumber test cases have been found in the PR.**");
+      await postComment(owner, repo, pullNumber, "**Relevant Cucumber test cases have been found in the PR.**");
     } else {
-      const message = "No relevant Cucumber test cases found. Please add or update test cases for new features.";
+      const message = "**No relevant Cucumber test cases found. Please add or update test cases for new features.**";
       console.log(message);
       await postComment(owner, repo, pullNumber, message);
       core.setFailed(message); // Fail the workflow if no test cases are found
     }
   } catch (error) {
-    console.error("An error occurred while checking for Cucumber test cases:", error);
+    console.error("**An error occurred while checking for Cucumber test cases:**", error);
     core.setFailed(error.message); // Use setFailed to fail the workflow on error
   }
 }
@@ -60,5 +60,5 @@ if (github.context.payload.pull_request) {
   const repo = github.context.repo.repo;
   checkForTestCases(owner, repo, pullNumber);
 } else {
-  console.log("This action runs only on pull request events.");
+  console.log("**This action runs only on pull request events.**");
 }
