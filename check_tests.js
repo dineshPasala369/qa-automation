@@ -5,60 +5,61 @@ const githubToken = process.env.GITHUB_TOKEN;
 const octokit = new Octokit({ auth: githubToken });
 
 async function postComment(owner, repo, issue_number, message) {
-  await octokit.issues.createComment({
-    owner,
-    repo,
-    issue_number,
-    body: message,
-  });
+    await octokit.issues.createComment({
+        owner,
+        repo,
+        issue_number,
+        body: message,
+    });
 }
 
 async function checkForTestCases(owner, repo, pullNumber) {
-  try {
-    const { data: pr } = await octokit.pulls.get({
-      owner,
-      repo,
-      pull_number: pullNumber,
-    });
+    try {
+        const { data: files } = await octokit.pulls.listFiles({
+            owner,
+            repo,
+            pull_number: pullNumber,
+        });
 
-    const hasSkipLabel = pr.labels.some(label => label.name === 'qa_2.0_skip');
-    if (hasSkipLabel) {
-      console.log("**Skipping test case check due to 'qa_2.0_skip' label.**");
-      await postComment(owner, repo, pullNumber, "**Skipping Cucmber test case check due to 'qa_2.0_skip' label.**");
-      return;
+        // Check if changes were made in src/main/java or /internal
+        const changesInRelevantAreas = files.some(file =>
+            (file.filename.startsWith('src/main/java') || file.filename.startsWith('internal/')) &&
+            (file.status === 'added' || file.status === 'modified')
+        );
+
+        if (!changesInRelevantAreas) {
+            // If no changes in src/main/java or /internal, post a comment and exit
+            await postComment(owner, repo, pullNumber, "**No significant code changes detected, So the check for Cucumber test cases is bypassed**");
+            return;
+        }
+
+        // If changes were made in src/main/java or /internal, check for test case updates
+        const hasRelevantTests = files.some(file =>
+            file.filename.startsWith('local-tests/features/') &&
+            (file.status === 'added' || file.status === 'modified')
+        );
+
+        let message;
+        if (hasRelevantTests) {
+            message = "**🚀 Excellent! Cucumber test cases have been identified in this PR, aligning with Shift Left testing principles. This proactive approach ensures that new features are thoroughly tested early in the development cycle, enhancing code quality and reducing future defects. Great job on maintaining high standards for testing!**";
+        } else {
+            message = "**Changes detected in critical code areas without corresponding updates in Cucumber test cases. To align with Shift Left testing principles, please ensure that new or modified features are accompanied by relevant test cases. This helps in identifying and addressing issues early in the development process, improving code quality and efficiency.**";
+            core.setFailed(message); // Optionally, fail the action if no test cases are found
+        }
+        await postComment(owner, repo, pullNumber, message);
+
+    } catch (error) {
+        console.error("**An error occurred while checking for Cucumber test cases:**", error);
+        core.setFailed(error.message);
     }
-
-    const { data: files } = await octokit.pulls.listFiles({
-      owner,
-      repo,
-      pull_number: pullNumber,
-    });
-
-    const hasRelevantTests = files.some(file =>
-      (file.status === 'added' || file.status === 'modified') &&
-      file.filename.startsWith('local-tests/features/')
-    );
-
-    if (hasRelevantTests) {
-      console.log("**Relevant Cucumber test cases have been found in the PR.**");
-      await postComment(owner, repo, pullNumber, "**Relevant Cucumber test cases have been found in the PR. QA_2.0 Checkpoint Passed**");
-    } else {
-      const message = "**No relevant Cucumber test cases found. Please add or update test cases for new features.**";
-      console.log(message);
-      await postComment(owner, repo, pullNumber, message);
-      core.setFailed(message); // Fail the workflow if no test cases are found
-    }
-  } catch (error) {
-    console.error("**An error occurred while checking for Cucumber test cases:**", error);
-    core.setFailed(error.message); // Use setFailed to fail the workflow on error
-  }
 }
 
 if (github.context.payload.pull_request) {
-  const pullNumber = github.context.payload.pull_request.number;
-  const owner = github.context.repo.owner;
-  const repo = github.context.repo.repo;
-  checkForTestCases(owner, repo, pullNumber);
+    const pullNumber = github.context.payload.pull_request.number;
+    const owner = github.context.repo.owner;
+    const repo = github.context.repo.repo;
+    checkForTestCases(owner, repo, pullNumber);
 } else {
-  console.log("**This action runs only on pull request events.**");
+    console.log("**This action runs only on pull request events.**");
 }
+
