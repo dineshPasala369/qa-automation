@@ -86,19 +86,19 @@ async function checkForTestCases(owner, repo, pullNumber) {
             pull_number: pullNumber,
         });
 
-        // Check if changes were made in src/main/java
-        const changesInJava = files.some(file =>
-            file.filename.startsWith('src/main/java') &&
+        // Check if changes were made in src/main/java or /internal
+        const changesInRelevantAreas = files.some(file =>
+            (file.filename.startsWith('src/main/java') || file.filename.startsWith('internal/')) &&
             (file.status === 'added' || file.status === 'modified')
         );
 
-        if (!changesInJava) {
-            // If no changes in src/main/java, post a comment and exit
-            await postComment(owner, repo, pullNumber, "No changes made in the code so cucumber test cases checkpoint is ok.");
+        if (!changesInRelevantAreas) {
+            // If no changes in src/main/java or /internal, post a comment and exit
+            await postComment(owner, repo, pullNumber, "**No significant code changes detected, So the check for Cucumber test cases is bypassed**");
             return;
         }
 
-        // If changes were made in src/main/java, check for test case updates
+        // If changes were made in src/main/java or /internal, check for test case updates
         const hasRelevantTests = files.some(file =>
             file.filename.startsWith('local-tests/features/') &&
             (file.status === 'added' || file.status === 'modified')
@@ -106,15 +106,15 @@ async function checkForTestCases(owner, repo, pullNumber) {
 
         let message;
         if (hasRelevantTests) {
-            message = "Relevant Cucumber test cases have been found in the PR.";
+            message = "**Relevant Cucumber test cases have been found in the PR.**";
         } else {
-            message = "No relevant Cucumber test cases found. Please add or update test cases for new features.";
+            message = "**Changes detected in critical code areas without corresponding updates in Cucumber test cases. Please add or update test cases for new features.**";
             core.setFailed(message); // Optionally, fail the action if no test cases are found
         }
         await postComment(owner, repo, pullNumber, message);
 
     } catch (error) {
-        console.error("An error occurred while checking for Cucumber test cases:", error);
+        console.error("**An error occurred while checking for Cucumber test cases:**", error);
         core.setFailed(error.message);
     }
 }
@@ -125,6 +125,6 @@ if (github.context.payload.pull_request) {
     const repo = github.context.repo.repo;
     checkForTestCases(owner, repo, pullNumber);
 } else {
-    console.log("This action runs only on pull request events.");
+    console.log("**This action runs only on pull request events.**");
 }
 
