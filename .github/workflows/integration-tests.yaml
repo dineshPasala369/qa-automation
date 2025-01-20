@@ -45,14 +45,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run test:integration
 
-  report:
-    name: Generate Test Report
-    needs: integration-tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Upload Cucumber Report
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate Test Report
         uses: actions/upload-artifact@v3
         with:
           name: cucumber-report
