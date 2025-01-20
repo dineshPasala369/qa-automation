@@ -1,12 +1,12 @@
 # Integration Testing Pipeline
 
-trigger:
-  - main
-
-pr:
-  branches:
-    include:
-      - '*'  # Run on all PR branches
+#trigger:
+#  - main
+#
+#pr:
+#  branches:
+#    include:
+#      - '*'  # Run on all PR branches
 
 pool:
   vmImage: 'ubuntu-latest'
