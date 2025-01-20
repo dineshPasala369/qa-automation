@@ -1,48 +1,17 @@
-# Integration Testing Pipeline
+trigger:
+  branches:
+    include:
+      - main
 
-#trigger:
-#  - main
-#
-#pr:
-#  branches:
-#    include:
-#      - '*'  # Run on all PR branches
-variables:
-  - name: System.Debug
-    value: true
+pr:
+  branches:
+    include:
+      - '*'
+
 pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-  # Step 1: Checkout the code
-  - task: Checkout@1
-    displayName: 'Checkout Repository'
-
-  # Step 2: Install Node.js
-  - task: NodeTool@0
-    displayName: 'Install Node.js'
-    inputs:
-      versionSpec: '20.x'
-
-  # Step 3: Install dependencies
   - script: |
-      npm install
-    displayName: 'Install dependencies'
-
-  # Step 4: Run Integration Tests
-  - script: |
-      mkdir -p reports/cucumber
-      npm run test:integration
-    displayName: 'Run Cucumber Integration Tests'
-
-  # Step 5: List files (for debugging)
-  - script: |
-      ls -R reports/cucumber || echo "No files found."
-    displayName: 'List Report Files'
-
-  # Step 6: Upload Cucumber Report
-  - task: PublishPipelineArtifact@1
-    displayName: 'Upload Cucumber Report'
-    inputs:
-      targetPath: reports/cucumber/cucumber-report.json
-      artifact: cucumber-report
+      echo "Hello, World!"
+    displayName: 'Simple Test Script'
