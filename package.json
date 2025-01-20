@@ -1,20 +1,16 @@
 {
-  "name": "qa-automation",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "@actions/github": "^6.0.0",
-    "@octokit/rest": "^18.0.0",
-    "@actions/core": "1.10.1",
-    "node-fetch": "^2.6.1"
+    "axios": "^1.0.0",
+    "chai": "^4.5.0",
+    "node-fetch": "^3.3.2"
   },
-  "engines": {
-    "node": ">=14.0.0"
+  "type": "module",
+  "scripts": {
+    "test:integration": "npx cucumber-js local-tests/features/*.feature --import local-tests/step_definitions/*.js --format json:reports/cucumber/cucumber-report.json"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^9.0.0"
   }
+
+
 }

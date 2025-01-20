@@ -1,0 +1,52 @@
+name: Run Cucumber Integration Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  setup:
+    name: Setup Environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+  integration-tests:
+    name: Run Cucumber Tests
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions/checkout@v3
+      - name: Clean npm cache
+        run: npm cache clean --force
+
+      - name: Install dependencies
+        run: npm install --verbose
+
+      - name: Create reports directory
+        run: mkdir -p reports/cucumber
+
+      - name: Run Integration Tests
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run test:integration
+
+      - name: Generate Test Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: cucumber-report
+          path: reports/cucumber/cucumber-report.json
