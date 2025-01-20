@@ -1,0 +1,36 @@
+trigger:
+  - main
+pr:
+  - '*'
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  # Step 1: Checkout the code
+  - task: Checkout@1
+    displayName: 'Checkout Repository'
+
+  # Step 2: Install Node.js dependencies
+  - task: NodeTool@0
+    displayName: 'Install Node.js'
+    inputs:
+      versionSpec: '20'
+    continueOnError: true
+
+  - script: |
+      npm install
+    displayName: 'Install dependencies'
+
+  # Step 3: Run Integration Tests
+  - script: |
+      mkdir -p reports/cucumber
+      npm run test:integration
+    displayName: 'Run Cucumber Integration Tests'
+
+
+  # Step 4: Upload Cucumber Report
+  - task: PublishPipelineArtifact@1
+    displayName: 'Upload Cucumber Report'
+    inputs:
+      targetPath: reports/cucumber/cucumber-report.json
+      artifact: cucumber-report
