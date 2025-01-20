@@ -37,6 +37,9 @@ jobs:
       - name: Install dependencies
         run: npm install --verbose
 
+      - name: Create reports directory
+        run: mkdir -p reports/cucumber
+
       - name: Run Integration Tests
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -47,13 +50,10 @@ jobs:
     needs: integration-tests
     runs-on: ubuntu-latest
     steps:
-      - name: Create reports directory
-        run: mkdir -p reports/cucumber
-
       - name: Upload Cucumber Report
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: actions/upload-artifact@v3
         with:
           name: cucumber-report
-          path: reports/cucumber/
+          path: reports/cucumber/cucumber-report.json
