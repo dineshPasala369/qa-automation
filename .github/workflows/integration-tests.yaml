@@ -1,0 +1,45 @@
+name: Run Cucumber Integration Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  setup:
+    name: Setup Environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: npm install
+
+  integration-tests:
+    name: Run Cucumber Tests
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3
+
+      - name: Run Integration Tests
+        run: npm run test:integration
+
+  report:
+    name: Generate Test Report
+    needs: integration-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upload Cucumber Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: cucumber-report
+          path: reports/cucumber/
