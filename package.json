@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "cucumber": "^8.0.0",
+    "cucumber": "^7.20.1",
     "chai": "^4.0.0",
     "axios": "^1.0.0"
   },
