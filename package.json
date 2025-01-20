@@ -5,6 +5,6 @@
     "axios": "^1.0.0"
   },
   "scripts": {
-    "test:integration": "cucumber-js --require features/step_definitions/**/*.js"
+    "test:integration": "cucumber.js --require features/step_definitions/**/*.js"
   }
 }
