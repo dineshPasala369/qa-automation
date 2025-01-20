@@ -1,10 +1,13 @@
 {
   "dependencies": {
-    "cucumber": "^6.0.7",
+    "axios": "^1.0.0",
     "chai": "^4.0.0",
-    "axios": "^1.0.0"
+    "cucumber": "^6.0.7"
   },
   "scripts": {
-    "test:integration": "cucumber-js --require local-tests/step_definitions/*.js"
+    "test:integration": "npx cucumber-js --require local-tests/step_definitions/*.js"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^11.2.0"
   }
 }
