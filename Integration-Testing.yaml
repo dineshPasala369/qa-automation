@@ -3,10 +3,10 @@
 trigger:
   - main
 
-pr:
-  branches:
-    include:
-      - '*'  # Run on all PR branches
+# pr:
+#   branches:
+#     include:
+#       - '*'  # Run on all PR branches
 
 pool:
   vmImage: 'ubuntu-latest'
