@@ -8,7 +8,7 @@
 #    include:
 #      - '*'  # Run on all PR branches
 variables:
-  - name: system.debug
+  - name: System.Debug
     value: true
 pool:
   vmImage: 'ubuntu-latest'
