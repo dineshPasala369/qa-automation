@@ -1,7 +1,12 @@
+# Integration Testing Pipeline
+
+
 trigger:
   - main
 pr:
-  - '*'
+  branches:
+    include:
+      - '*'
 pool:
   vmImage: 'ubuntu-latest'
 
