@@ -7,7 +7,9 @@
 #  branches:
 #    include:
 #      - '*'  # Run on all PR branches
-
+variables:
+  - name: system.debug
+    value: true
 pool:
   vmImage: 'ubuntu-latest'
 
