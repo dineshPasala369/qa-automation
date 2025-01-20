@@ -9,9 +9,17 @@ pr:
       - '*'
 
 pool:
-  vmImage: 'ubuntu-latest'
-
+  name: 'MyAgentPool'
 steps:
   - script: |
-      echo "Hello, World!"
-    displayName: 'Simple Test Script'
+      echo "Running on self-hosted agent"
+      npm install
+      mkdir -p reports/cucumber
+      npm run test:integration
+    displayName: 'Run Tests'
+
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: reports/cucumber/cucumber-report.json
+      artifact: cucumber-report
+    displayName: 'Upload Report'

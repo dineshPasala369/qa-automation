@@ -1,0 +1,44 @@
+parameters:
+
+  - name: service
+    type: string
+  - name: stack
+    type: string
+  - name: geoCode
+  - name: repository
+    type: string
+  - name: tag
+    type: string
+  - name: skipTests
+    type: boolean
+    default: false
+  - name: disableConcurrentBuilds
+    type: boolean
+    default: false
+  - name: promotionMap
+    type: object
+    default:
+      dev: itg
+      itg: stg
+      stg: prod
+
+  - name: skipPromoteMap
+    type: object
+    default: {}
+  - name: systemTestList
+    type: object
+    default: []
+  - name: trunkBranch
+    type: string
+    default: refs/heads/master
+
+stages:
+  - template: /stages/onecloud-configure-promotion-v0.yaml
+    parameters:
+      service: ${{ parameters.service }}
+      stack: ${{ parameters.stack }}
+      geoCode: ${{ parameters.geoCode }}
+      promotionMap: ${{ parameters.promotionMap }}
+      skipPromoteMap: ${{ parameters.skipPromoteMap }}
+      tag: ${{ parameters.tag }}
+      trunkBranch: ${{ parameters.trunkBranch }}
